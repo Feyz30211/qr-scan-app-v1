@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تاریخچه اسکن‌ها - پیشرو کاسپین سلامت</title>
+    <style>
+        :root {
+            --primary: #1a6fa0;
+            --primary-dark: #145a80;
+            --light: #ffffff;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --border: #dfe6e9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tahoma', sans-serif;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0 25px;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .user-profile {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(26, 111, 160, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .user-role {
+            background: #e6f0f7;
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(26, 111, 160, 0.08);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+            font-family: 'DIN Next', monospace;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(26, 111, 160, 0.08);
+        }
+        
+        .table-header {
+            padding: 15px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #f1f5f9;
+        }
+        
+        th, td {
+            padding: 15px 20px;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        tr:hover {
+            background: #f8fafc;
+        }
+        
+        .scan-data {
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            background: #f8fafc;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 30px;
+            background: #e0e6ed;
+            color: var(--dark);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.history.back()">&larr;</button>
+            <div class="page-title">تاریخچه اسکن‌های من</div>
+            <div style="width: 1.5rem;"></div>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">پ</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">پرسنل محترم</div>
+                <div class="user-role">پرسنل سیستم</div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">تعداد کل اسکن‌ها</div>
+                <div class="stat-value" id="totalScans">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">اسکن امروز</div>
+                <div class="stat-value" id="todayScans">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">آخرین اسکن</div>
+                <div class="stat-value" id="lastScanTime">-</div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">
+                    <span>📱</span>
+                    <span>تاریخچه اسکن‌ها</span>
+                </div>
+                <button class="download-btn" onclick="downloadUserScans()">
+                    <span>📥</span>
+                    <span>دانلود به صورت TXT</span>
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>متن اسکن</th>
+                        <th>تاریخ و زمان</th>
+                    </tr>
+                </thead>
+                <tbody id="scansTable">
+                    <!-- داده‌ها با جاوااسکریپت اضافه می‌شوند -->
+                </tbody>
+            </table>
+        </div>
+        
+        <button class="logout-btn" onclick="logout()">خروج از سیستم</button>
+    </div>
+
+    <!-- تنظیمات Gist -->
+    <script>
+        const GIST_ID = "1234567890abcdef1234567890abcdef"; // ID Gist خودت را اینجا وارد کن
+        const GITHUB_TOKEN = "ghp_..."; // توکن شخصی خودت را اینجا وارد کن
+    </script>
+
+    <script>
+        // بررسی ورود
+        if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("userRole") !== "staff") {
+            window.location.href = "index.html";
+            alert("شما دسترسی لازم را ندارید!");
+        }
+        
+        // نمایش اطلاعات کاربر
+        document.getElementById("userName").textContent = localStorage.getItem("currentUser") || "پرسنل";
+        document.getElementById("userAvatar").textContent = (localStorage.getItem("currentUser") || "پ")[0].toUpperCase();
+        
+        // بارگذاری تاریخچه
+        function loadHistory() {
+            const currentUser = localStorage.getItem("currentUser");
+            
+            fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                headers: {
+                    "Authorization": `token ${GITHUB_TOKEN}`,
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("خطا در دریافت داده‌ها");
+                return response.json();
+            })
+            .then(gist => {
+                const filename = Object.keys(gist.files)[0];
+                const content = JSON.parse(gist.files[filename].content);
+                const allScans = content.scans || [];
+                
+                // فیلتر اسکن‌های کاربر فعلی
+                const userScans = allScans.filter(scan => 
+                    scan.user === currentUser
+                );
+                
+                // نمایش آمار
+                document.getElementById("totalScans").textContent = userScans.length;
+                
+                // محاسبه اسکن‌های امروز
+                const today = new Date().toISOString().split('T')[0];
+                const todayScans = userScans.filter(scan => 
+                    scan.timestamp && scan.timestamp.startsWith(today)
+                ).length;
+                document.getElementById("todayScans").textContent = todayScans;
+                
+                // آخرین اسکن
+                if (userScans.length > 0) {
+                    const lastScan = userScans[userScans.length - 1];
+                    const timestamp = lastScan.timestamp ? 
+                        new Date(lastScan.timestamp).toLocaleTimeString('fa-IR') : '-';
+                    document.getElementById("lastScanTime").textContent = timestamp;
+                }
+                
+                // پر کردن جدول
+                const tableBody = document.getElementById("scansTable");
+                tableBody.innerHTML = '';
+                
+                if (userScans.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" style="text-align: center; padding: 25px; color: var(--gray);">اسکنی یافت نشد</td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                userScans.forEach((scan, index) => {
+                    const timestamp = scan.timestamp ? 
+                        new Date(scan.timestamp).toLocaleString('fa-IR') : 'نامشخص';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${userScans.length - index}</td>
+                        <td><div class="scan-data">${scan.scannedData}</div></td>
+                        <td>${timestamp}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error("خطا در بارگذاری تاریخچه:", error);
+                const tableBody = document.getElementById("scansTable");
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 25px; color: var(--danger);">خطا در بارگذاری داده‌ها</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        // دانلود اسکن‌های کاربر به صورت TXT
+        function downloadUserScans() {
+            const currentUser = localStorage.getItem("currentUser");
+            
+            fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                headers: {
+                    "Authorization": `token ${GITHUB_TOKEN}`,
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            })
+            .then(response => response.json())
+            .then(gist => {
+                const filename = Object.keys(gist.files)[0];
+                const content = JSON.parse(gist.files[filename].content);
+                const userScans = content.scans.filter(scan => scan.user === currentUser);
+                
+                if (userScans.length === 0) {
+                    alert('هیچ اسکنی برای دانلود وجود ندارد');
+                    return;
+                }
+                
+                // ساخت محتوای فایل
+                let txtContent = 'پیشرو کاسپین سلامت - اسکن‌های شما\n';
+                txtContent += 'تاریخ گزارش: ' + new Date().toLocaleDateString('fa-IR') + '\n';
+                txtContent += 'تعداد اسکن‌ها: ' + userScans.length + '\n';
+                txtContent += '========================================\n\n';
+                
+                userScans.forEach((scan, index) => {
+                    const timestamp = new Date(scan.timestamp).toLocaleString('fa-IR');
+                    txtContent += `ردیف: ${index + 1}\n`;
+                    txtContent += `تاریخ و زمان: ${timestamp}\n`;
+                    txtContent += `متن اسکن شده: ${scan.scannedData}\n`;
+                    txtContent += '----------------------------------------\n\n';
+                });
+                
+                // دانلود فایل
+                const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `اسکن_های_من_${new Date().toISOString().slice(0, 10)}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    alert(`فایل TXT با موفقیت دانلود شد!\nتعداد اسکن‌ها: ${userScans.length}`);
+                }, 100);
+            })
+            .catch(error => {
+                alert("خطا در دانلود: " + error.message);
+            });
+        }
+        
+        // خروج
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userEmail");
+            window.location.href = "index.html";
+        }
+        
+        // بارگذاری اولیه
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHistory();
+        });
+    </script>
+</body>
+</html>
