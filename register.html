@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>درخواست عضویت - پیشرو کاسپین سلامت</title>
+    <style>
+        :root {
+            --primary: #1a6fa0;
+            --primary-dark: #145a80;
+            --light: #ffffff;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tahoma', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e6f0f7 0%, #f5f7fa 100%);
+            color: var(--dark);
+            text-align: center;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(26, 111, 160, 0.15);
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .company-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .tagline {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 111, 160, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin: 8px 0;
+            min-height: 20px;
+            font-size: 0.95rem;
+            text-align: right;
+            padding: 0 5px;
+        }
+        
+        .success {
+            color: #27ae60;
+            margin: 8px 0;
+            min-height: 20px;
+            font-size: 0.95rem;
+            text-align: right;
+            padding: 0 5px;
+        }
+        
+        .login-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .login-link:hover {
+            text-decoration: underline;
+        }
+        
+        .instructions {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: right;
+            font-size: 0.95rem;
+            color: #6c757d;
+            border: 1px solid #e0e6ed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📝</div>
+            <div class="company-name">پیشرو کاسپین سلامت</div>
+            <div class="tagline">درخواست عضویت پرسنل</div>
+        </div>
+        
+        <div class="content">
+            <h2 style="margin-bottom: 25px; color: var(--primary);">درخواست عضویت در سیستم</h2>
+            
+            <div class="form-group">
+                <label>نام کاربری</label>
+                <input type="text" id="username" placeholder="نام کاربری مورد نظر">
+            </div>
+            
+            <div class="form-group">
+                <label>رمز عبور</label>
+                <input type="password" id="password" placeholder="رمز عبور">
+            </div>
+            
+            <div class="form-group">
+                <label>تکرار رمز عبور</label>
+                <input type="password" id="confirmPassword" placeholder="تکرار رمز عبور">
+            </div>
+            
+            <div class="form-group">
+                <label>نام و نام خانوادگی</label>
+                <input type="text" id="fullName" placeholder="نام کامل خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label>شماره تماس</label>
+                <input type="tel" id="phone" placeholder="09123456789">
+            </div>
+            
+            <div class="error" id="error"></div>
+            <div class="success" id="success"></div>
+            
+            <button onclick="submitRequest()">ارسال درخواست</button>
+            
+            <div class="instructions">
+                <p>• نام کاربری باید منحصر به فرد باشد</p>
+                <p>• پس از تأیید توسط مدیر، ایمیلی برای شما ارسال خواهد شد</p>
+                <p>• در صورت تأیید، می‌توانید با همین نام کاربری و رمز وارد سیستم شوید</p>
+            </div>
+            
+            <a href="index.html" class="login-link">بازگشت به صفحه ورود</a>
+        </div>
+    </div>
+
+    <!-- تنظیمات Gist -->
+    <script>
+        const GIST_ID = "1234567890abcdef1234567890abcdef"; // ID Gist خودت را اینجا وارد کن
+        const GITHUB_TOKEN = "ghp_..."; // توکن شخصی خودت را اینجا وارد کن
+    </script>
+
+    <script>
+        function showError(message) {
+            document.getElementById('error').textContent = message;
+            document.getElementById('success').textContent = '';
+        }
+        
+        function showSuccess(message) {
+            document.getElementById('success').textContent = message;
+            document.getElementById('error').textContent = '';
+        }
+        
+        function validateForm() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            if (!username) {
+                showError('لطفاً نام کاربری را وارد کنید');
+                return false;
+            }
+            
+            if (username.length < 4) {
+                showError('نام کاربری باید حداقل 4 کاراکتر باشد');
+                return false;
+            }
+            
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showError('نام کاربری فقط می‌تواند شامل حروف، اعداد و _ باشد');
+                return false;
+            }
+            
+            if (!password) {
+                showError('لطفاً رمز عبور را وارد کنید');
+                return false;
+            }
+            
+            if (password.length < 6) {
+                showError('رمز عبور باید حداقل 6 کاراکتر باشد');
+                return false;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('رمز عبور و تکرار آن یکسان نیستند');
+                return false;
+            }
+            
+            if (!fullName) {
+                showError('لطفاً نام و نام خانوادگی را وارد کنید');
+                return false;
+            }
+            
+            if (!phone || !/^09[0-9]{9}$/.test(phone)) {
+                showError('لطفاً شماره تماس معتبر وارد کنید (مثال: 09123456789)');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function submitRequest() {
+            if (!validateForm()) return;
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            // نمایش لودر
+            document.querySelector('button').textContent = 'در حال ارسال...';
+            document.querySelector('button').disabled = true;
+            
+            // دریافت داده‌ها از Gist
+            fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                headers: {
+                    "Authorization": `token ${GITHUB_TOKEN}`,
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('خطا در اتصال به سرور');
+                return response.json();
+            })
+            .then(gist => {
+                const filename = Object.keys(gist.files)[0];
+                const content = JSON.parse(gist.files[filename].content);
+                
+                // بررسی تکراری بودن نام کاربری
+                const existingUser = [...(content.users || []), ...(content.pendingRequests || [])]
+                    .find(user => user.username === username);
+                
+                if (existingUser) {
+                    throw new Error('نام کاربری وارد شده قبلاً درخواست داده شده است');
+                }
+                
+                // ایجاد درخواست جدید
+                const newRequest = {
+                    id: 'req_' + Math.random().toString(36).substr(2, 9),
+                    username: username,
+                    password: password,
+                    fullName: fullName,
+                    phone: phone,
+                    role: 'staff',
+                    timestamp: new Date().toISOString(),
+                    status: 'pending'
+                };
+                
+                // افزودن به درخواست‌های در انتظار
+                content.pendingRequests = content.pendingRequests || [];
+                content.pendingRequests.push(newRequest);
+                
+                // ذخیره در Gist
+                return fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Authorization": `token ${GITHUB_TOKEN}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            [filename]: {
+                                content: JSON.stringify(content, null, 2)
+                            }
+                        }
+                    })
+                });
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('خطا در ذخیره درخواست');
+                return response.json();
+            })
+            .then(() => {
+                showSuccess('درخواست شما با موفقیت ارسال شد! پس از تأیید توسط مدیر، می‌توانید وارد سیستم شوید.');
+                
+                // پاک کردن فرم
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('confirmPassword').value = '';
+                document.getElementById('fullName').value = '';
+                document.getElementById('phone').value = '';
+                
+                // بازگرداندن دکمه
+                document.querySelector('button').textContent = 'ارسال درخواست';
+                document.querySelector('button').disabled = false;
+            })
+            .catch(error => {
+                showError(error.message || 'خطا در ارسال درخواست. لطفاً دوباره تلاش کنید.');
+                document.querySelector('button').textContent = 'ارسال درخواست';
+                document.querySelector('button').disabled = false;
+                console.error('خطا:', error);
+            });
+        }
+    </script>
+</body>
+</html>
