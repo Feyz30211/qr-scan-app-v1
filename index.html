@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ورود به سیستم - پیشرو کاسپین سلامت</title>
+    <style>
+        :root {
+            --primary: #1a6fa0;
+            --primary-dark: #145a80;
+            --light: #ffffff;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tahoma', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e6f0f7 0%, #f5f7fa 100%);
+            color: var(--dark);
+            text-align: center;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(26, 111, 160, 0.15);
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .company-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .tagline {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .role-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .role-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        
+        .role-option:hover {
+            border-color: var(--primary);
+            background: #e6f0f7;
+        }
+        
+        .role-option.active {
+            border-color: var(--primary);
+            background: #e6f0f7;
+            box-shadow: 0 0 0 3px rgba(26, 111, 160, 0.2);
+        }
+        
+        .role-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .role-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .role-desc {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .login-form {
+            display: none;
+        }
+        
+        .login-form.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1.5px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 111, 160, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin: 10px 0;
+            min-height: 20px;
+            font-size: 0.95rem;
+            text-align: left;
+            padding: 0 5px;
+        }
+        
+        .footer {
+            padding: 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e0e6ed;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏥</div>
+            <div class="company-name">پیشرو کاسپین سلامت</div>
+            <div class="tagline">سیستم مدیریت اسکن QR</div>
+        </div>
+        
+        <div class="content">
+            <div class="role-selector">
+                <div class="role-option" data-role="admin">
+                    <div class="role-icon">🔐</div>
+                    <div class="role-title">ورود مدیران</div>
+                    <div class="role-desc">داشبورد کامل و مدیریت سیستم</div>
+                </div>
+                
+                <div class="role-option" data-role="staff">
+                    <div class="role-icon">📱</div>
+                    <div class="role-title">ورود پرسنل</div>
+                    <div class="role-desc">فقط اسکن QR و مشاهده مشخصات</div>
+                </div>
+            </div>
+            
+            <div class="login-form" id="adminForm">
+                <h2 style="margin-bottom: 20px; color: var(--primary);">ورود مدیران</h2>
+                <input type="text" id="adminUsername" placeholder="نام کاربری مدیر">
+                <input type="password" id="adminPassword" placeholder="رمز عبور">
+                <div class="error" id="adminError"></div>
+                <button onclick="adminLogin()">ورود به داشبورد</button>
+            </div>
+            
+            <div class="login-form" id="staffForm">
+                <h2 style="margin-bottom: 20px; color: var(--primary);">ورود پرسنل</h2>
+                <input type="text" id="staffUsername" placeholder="نام کاربری پرسنل">
+                <input type="password" id="staffPassword" placeholder="رمز عبور">
+                <div class="error" id="staffError"></div>
+                <button onclick="staffLogin()">ورود به اسکنر</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            سیستم اسکن QR کد پیشرو کاسپین سلامت &copy; 1402
+        </div>
+    </div>
+
+    <!-- تنظیمات Gist -->
+    <script>
+        const GIST_ID = "1234567890abcdef1234567890abcdef"; // ID Gist خودت را اینجا وارد کن
+        const GITHUB_TOKEN = "ghp_..."; // توکن شخصی خودت را اینجا وارد کن
+    </script>
+
+    <script>
+        // انتخاب نقش
+        document.querySelectorAll('.role-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // حذف کلاس active از همه
+                document.querySelectorAll('.role-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                
+                // افزودن کلاس active به انتخابی
+                option.classList.add('active');
+                
+                // نمایش فرم مربوطه
+                const role = option.getAttribute('data-role');
+                document.querySelectorAll('.login-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                document.getElementById(`${role}Form`).classList.add('active');
+            });
+        });
+        
+        // ورود مدیران
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorEl = document.getElementById('adminError');
+            
+            errorEl.textContent = '';
+            
+            if (!username || !password) {
+                errorEl.textContent = 'لطفاً نام کاربری و رمز عبور را وارد کنید';
+                return;
+            }
+            
+            authenticateUser(username, password, 'admin', errorEl);
+        }
+        
+        // ورود پرسنل
+        function staffLogin() {
+            const username = document.getElementById('staffUsername').value;
+            const password = document.getElementById('staffPassword').value;
+            const errorEl = document.getElementById('staffError');
+            
+            errorEl.textContent = '';
+            
+            if (!username || !password) {
+                errorEl.textContent = 'لطفاً نام کاربری و رمز عبور را وارد کنید';
+                return;
+            }
+            
+            authenticateUser(username, password, 'staff', errorEl);
+        }
+        
+        // تابع احراز هویت
+        function authenticateUser(username, password, role, errorEl) {
+            fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                headers: {
+                    "Authorization": `token ${GITHUB_TOKEN}`,
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('خطا در اتصال به سرور');
+                return response.json();
+            })
+            .then(gist => {
+                const filename = Object.keys(gist.files)[0];
+                const content = JSON.parse(gist.files[filename].content);
+                const users = content.users || [];
+                
+                const foundUser = users.find(user => 
+                    user.username === username && 
+                    user.password === password &&
+                    (role === 'admin' ? user.role === 'admin' : user.role !== 'admin')
+                );
+                
+                if (foundUser) {
+                    // ذخیره اطلاعات کاربر
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("currentUser", username);
+                    localStorage.setItem("userRole", foundUser.role);
+                    localStorage.setItem("userEmail", foundUser.email || '');
+                    
+                    // هدایت به صفحه مربوطه
+                    if (role === 'admin') {
+                        window.location.href = "admin-dashboard.html";
+                    } else {
+                        window.location.href = "staff-scan.html";
+                    }
+                } else {
+                    errorEl.textContent = 'نام کاربری یا رمز عبور اشتباه است';
+                }
+            })
+            .catch(error => {
+                errorEl.textContent = error.message;
+                console.error('خطا:', error);
+            });
+        }
+        
+        // بارگذاری اولیه
+        document.addEventListener('DOMContentLoaded', () => {
+            // انتخاب پیش‌فرض: ورود پرسنل
+            document.querySelector('.role-option[data-role="staff"]').click();
+        });
+    </script>
+</body>
+</html>
