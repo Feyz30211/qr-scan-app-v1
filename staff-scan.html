@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>اسکن QR - پیشرو کاسپین سلامت</title>
+    <style>
+        :root {
+            --primary: #1a6fa0;
+            --primary-dark: #145a80;
+            --light: #ffffff;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tahoma', sans-serif;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0 25px;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .user-profile {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(26, 111, 160, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .user-role {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        
+        .scan-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(26, 111, 160, 0.08);
+        }
+        
+        .scan-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #reader {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .scan-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .scan-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .start-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .start-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .stop-btn {
+            background: #e0e6ed;
+            color: var(--dark);
+            display: none;
+        }
+        
+        .result-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: #e6f0f7;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .result-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            font-size: 1.1rem;
+            word-break: break-all;
+        }
+        
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        .history-link {
+            display: block;
+            margin: 20px 0;
+            color: var(--primary);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 30px;
+            background: #e0e6ed;
+            color: var(--dark);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.history.back()">&larr;</button>
+            <div class="page-title">اسکن QR کد</div>
+            <div style="width: 1.5rem;"></div>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">پ</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">پرسنل محترم</div>
+                <div class="user-role">پرسنل سیستم</div>
+            </div>
+        </div>
+        
+        <div class="scan-container">
+            <div class="scan-title">
+                <span>📱</span>
+                <span>اسکن QR کد</span>
+            </div>
+            
+            <div id="reader"></div>
+            
+            <div class="scan-controls">
+                <button class="scan-btn start-btn" id="startButton">شروع اسکن</button>
+                <button class="scan-btn stop-btn" id="stopButton">توقف</button>
+            </div>
+            
+            <div class="result-container" id="resultContainer">
+                <div class="result-title">متن اسکن شده:</div>
+                <div class="result-text" id="qrText"></div>
+                <button class="save-btn" onclick="saveScan()">ذخیره اسکن</button>
+            </div>
+        </div>
+        
+        <a href="staff-history.html" class="history-link">👁️ مشاهده تاریخچه اسکن‌های من</a>
+        <button class="logout-btn" onclick="logout()">خروج از سیستم</button>
+    </div>
+
+    <!-- تنظیمات Gist -->
+    <script>
+        const GIST_ID = "1234567890abcdef1234567890abcdef"; // ID Gist خودت را اینجا وارد کن
+        const GITHUB_TOKEN = "ghp_..."; // توکن شخصی خودت را اینجا وارد کن
+    </script>
+
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+    <script>
+        // بررسی ورود
+        if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("userRole") !== "staff") {
+            window.location.href = "index.html";
+        }
+        
+        let html5QrCode;
+        let scannedData = "";
+        
+        // نمایش اطلاعات کاربر
+        document.getElementById("userName").textContent = localStorage.getItem("currentUser") || "پرسنل";
+        document.getElementById("userAvatar").textContent = (localStorage.getItem("currentUser") || "پ")[0].toUpperCase();
+        
+        // دکمه شروع اسکن
+        document.getElementById("startButton").addEventListener("click", function() {
+            document.getElementById("startButton").style.display = "none";
+            document.getElementById("stopButton").style.display = "block";
+            
+            html5QrCode = new Html5Qrcode("reader");
+            
+            html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: 250
+                },
+                (decodedText) => {
+                    scannedData = decodedText;
+                    document.getElementById("qrText").textContent = decodedText;
+                    document.getElementById("resultContainer").style.display = "block";
+                    html5QrCode.stop();
+                },
+                (errorMessage) => {
+                    console.log("خطا:", errorMessage);
+                }
+            ).catch(err => {
+                console.error("خطا در شروع:", err);
+                alert("خطا در دسترسی به دوربین: " + err.message);
+            });
+        });
+        
+        // دکمه توقف اسکن
+        document.getElementById("stopButton").addEventListener("click", function() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById("startButton").style.display = "block";
+                    document.getElementById("stopButton").style.display = "none";
+                });
+            }
+        });
+        
+        // ذخیره اسکن
+        function saveScan() {
+            const username = localStorage.getItem("currentUser") || "کاربر";
+            const timestamp = new Date().toISOString();
+            
+            // دریافت داده‌های فعلی
+            fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                headers: {
+                    "Authorization": `token ${GITHUB_TOKEN}`,
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            })
+            .then(response => response.json())
+            .then(gist => {
+                const filename = Object.keys(gist.files)[0];
+                const content = JSON.parse(gist.files[filename].content);
+                
+                // افزودن اسکن جدید
+                content.scans = content.scans || [];
+                content.scans.push({
+                    user: username,
+                    scannedData: scannedData,
+                    timestamp: timestamp
+                });
+                
+                // ذخیره در Gist
+                return fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Authorization": `token ${GITHUB_TOKEN}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            [filename]: {
+                                content: JSON.stringify(content, null, 2)
+                            }
+                        }
+                    })
+                });
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("خطا در ذخیره");
+                alert("اسکن با موفقیت ذخیره شد!");
+                document.getElementById("resultContainer").style.display = "none";
+                document.getElementById("startButton").style.display = "block";
+            })
+            .catch(error => {
+                alert("خطا در ذخیره: " + error.message);
+            });
+        }
+        
+        // خروج
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userEmail");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
