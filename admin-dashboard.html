@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد مدیریتی - پیشرو کاسپین سلامت</title>
+    
+    <!-- فونت بی‌نازنین برای فارسی -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.3.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+    
+    <!-- فونت اعداد زیبا (DIN Next) -->
+    <link href="https://fonts.googleapis.com/css2?family=DIN+Next:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* رنگ‌های سازمانی پیشرو کاسپین سلامت */
+            --primary: #1a6fa0; /* آبی سازمانی */
+            --primary-dark: #145a80; /* آبی تیره‌تر */
+            --primary-light: #e6f0f7; /* آبی روشن برای پس‌زمینه */
+            --secondary: #4a90e2; /* آبی ثانویه */
+            --accent: #2ecc71; /* سبز برای موفقیت‌ها */
+            --warning: #f39c12; /* نارنجی برای هشدارها */
+            --danger: #e74c3c; /* قرمز برای خطاها */
+            --light: #ffffff; /* سفید */
+            --dark: #2c3e50; /* سیاه مایل به آبی */
+            --gray: #7f8c8d; /* خاکستری */
+            --border: #dfe6e9; /* خاکستری روشن */
+            --card-shadow: 0 0.125rem 0.25rem rgba(26, 111, 160, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sahel', Tahoma, sans-serif; /* فونت بی‌نازنین برای متن‌های فارسی */
+            background-color: #f8f9fa;
+            color: var(--dark);
+            direction: rtl;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+        }
+
+        /* لودر */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(26, 111, 160, 0.2);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* سایدبار */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(26, 111, 160, 0.2);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 25px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.5rem;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .company-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        .company-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        .sidebar-menu {
+            padding: 0 10px;
+        }
+
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-radius: 8px 0 0 8px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            margin: 8px 0;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            gap: 15px;
+            font-size: 1.05rem;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-left: 4px solid white;
+        }
+
+        .sidebar-menu-item.active {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            font-weight: 600;
+            border-left: 4px solid white;
+        }
+
+        .sidebar-menu-item i {
+            font-size: 1.25rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        /* محتوای اصلی */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 25px;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        /* هدر */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 30px;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .header-title {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title i {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: var(--primary-light);
+            padding: 8px 18px;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .user-profile:hover {
+            background: var(--primary);
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 5px rgba(26, 111, 160, 0.2);
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+
+        .user-role {
+            font-size: 0.85rem;
+            background: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* کارت‌ها */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(26, 111, 160, 0.15);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            color: var(--gray);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 2.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-family: 'DIN Next', monospace; /* فونت زیبا برای اعداد */
+        }
+
+        .card-trend {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+        }
+
+        .trend-up {
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-down {
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* نمودارها و جدول */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-full {
+            grid-column: 1 / -1;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            padding: 25px;
+            height: 320px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-title i {
+            color: var(--primary);
+        }
+
+        .stats-filter {
+            display: flex;
+            background: var(--primary-light);
+            border-radius: 30px;
+            padding: 5px;
+            gap: 5px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .table-header {
+            padding: 20px 25px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-title i {
+            color: var(--primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f1f5f9;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background: var(--primary-light);
+        }
+
+        .status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--accent);
+        }
+
+        .status-inactive {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+        }
+
+        .action-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: rgba(26, 111, 160, 0.1);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(26, 111, 160, 0.15);
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(26, 111, 160, 0.2);
+        }
+
+        /* فرم افزودن کاربر */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 10px 30px rgba(26, 111, 160, 0.25);
+            animation: modalOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        @keyframes modalOpen {
+            from { 
+                opacity: 0; 
+                transform: translateY(-30px) scale(0.95);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            background: var(--primary-light);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-title i {
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 1.05rem;
+            transition: all 0.2s;
+            font-family: 'Sahel', Tahoma, sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 111, 160, 0.15);
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 6px rgba(26, 111, 160, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 8px rgba(26, 111, 160, 0.15);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #dde2e6;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* ریسپانسیو */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.7rem;
+            color: var(--primary);
+            margin-left: 12px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* پاکت‌های اعلان */
+        .notification {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            padding: 18px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            font-size: 1.05rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transform: translateX(-120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification i {
+            font-size: 1.3rem;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--accent), #27ae60);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+        }
+
+        /* تب‌ها */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            padding: 14px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* خطوط راهنما */
+        .guideline {
+            position: absolute;
+            height: 100%;
+            width: 1px;
+            background: var(--primary-light);
+            opacity: 0.5;
+        }
+
+        .guideline-1 {
+            left: 25%;
+        }
+
+        .guideline-2 {
+            left: 50%;
+        }
+
+        .guideline-3 {
+            left: 75%;
+        }
+    </style>
+</head>
+<body>
+    <!-- لودر -->
+    <div class="loader">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <div>در حال بارگذاری داده‌ها...</div>
+        </div>
+    </div>
+
+    <!-- سایدبار -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <div class="company-logo">پ</div>
+                <div>
+                    <div class="company-name">پیشرو کاسپین سلامت</div>
+                    <div class="company-subtitle">سیستم مدیریت اسکن QR</div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-menu-item active" data-tab="overview">
+                <i>📊</i>
+                <span>نمای کلی</span>
+            </div>
+            <div class="sidebar-menu-item" data-tab="users">
+                <i>👥</i>
+                <span>مدیریت کاربران</span>
+            </div>
+            <div class="sidebar-menu-item" data-tab="requests">
+                <i>📨</i>
+                <span>درخواست‌های جدید</span>
+                <span id="pendingRequestsCount" style="background: var(--danger); color: white; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; margin-right: 5px; display: none;">0</span>
+            </div>
+            <div class="sidebar-menu-item" data-tab="scans">
+                <i>📱</i>
+                <span>تاریخچه اسکن‌ها</span>
+            </div>
+            <div class="sidebar-menu-item" data-tab="settings">
+                <i>⚙️</i>
+                <span>تنظیمات سیستم</span>
+            </div>
+            <div class="sidebar-menu-item" id="logoutBtn">
+                <i>🚪</i>
+                <span>خروج از سیستم</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- محتوای اصلی -->
+    <div class="main-content">
+        <!-- هدر -->
+        <div class="header">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            <div class="header-title">
+                <i>🏥</i>
+                <span>داشبورد مدیریتی پیشرو کاسپین سلامت</span>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">ا</div>
+                <div>
+                    <div class="user-name" id="userName">مدیر سیستم</div>
+                    <div class="user-role">ادمین اصلی</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- نمای کلی -->
+        <div class="tab-content" id="overviewTab">
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">کاربران فعال</div>
+                    <div class="card-value" id="activeUsers">0</div>
+                    <div class="card-trend trend-up">
+                        <span>↑ 12%</span>
+                        <span>نسبت به ماه گذشته</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📱</div>
+                    <div class="card-title">تعداد اسکن‌ها</div>
+                    <div class="card-value" id="totalScans">0</div>
+                    <div class="card-trend trend-up">
+                        <span>↑ 8%</span>
+                        <span>نسبت به هفته گذشته</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📅</div>
+                    <div class="card-title">اسکن امروز</div>
+                    <div class="card-value" id="todayScans">0</div>
+                    <div class="card-trend trend-down">
+                        <span>↓ 3%</span>
+                        <span>نسبت به دیروز</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🆕</div>
+                    <div class="card-title">کاربران جدید</div>
+                    <div class="card-value" id="newUsers">0</div>
+                    <div class="card-trend trend-up">
+                        <span>↑ 5</span>
+                        <span>این هفته</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <i>📈</i>
+                            <span>آمار اسکن‌ها (30 روز اخیر)</span>
+                        </div>
+                        <div class="stats-filter">
+                            <button class="filter-btn active" data-period="month">ماهانه</button>
+                            <button class="filter-btn" data-period="week">هفتگی</button>
+                            <button class="filter-btn" data-period="day">روزانه</button>
+                        </div>
+                    </div>
+                    <div id="scanChart" style="width: 100%; height: 80%; position: relative;">
+                        <!-- خطوط راهنما برای طراحی بهتر -->
+                        <div class="guideline guideline-1"></div>
+                        <div class="guideline guideline-2"></div>
+                        <div class="guideline guideline-3"></div>
+                        
+                        <!-- نمودار با جاوااسکریپت ایجاد می‌شود -->
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--gray);">
+                            <div style="font-size: 3rem; margin-bottom: 15px; color: var(--primary-light);">📈</div>
+                            <div style="font-size: 1.3rem; color: var(--dark);">آمار اسکن‌ها</div>
+                            <div style="font-size: 0.95rem; color: var(--gray); margin-top: 8px;">در حال بارگیری آمار...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">
+                            <i>👥</i>
+                            <span>کاربران اخیر</span>
+                        </div>
+                        <button class="btn-add" id="addUserBtn">
+                            <i>+</i>
+                            <span>افزودن کاربر</span>
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>نام کاربری</th>
+                                <th>تاریخ عضویت</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentUsersTable">
+                            <!-- داده‌ها با جاوااسکریپت اضافه می‌شوند -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card card-full">
+                <div class="table-header">
+                    <div class="table-title">
+                        <i>📱</i>
+                        <span>اسکن‌های اخیر</span>
+                    </div>
+                    <button class="btn" style="background: #28a745; color: white;" onclick="downloadAllScans()">
+                        <i>📥</i>
+                        <span>دانلود همه به صورت TXT</span>
+                    </button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>کاربر</th>
+                            <th>متن اسکن</th>
+                            <th>تاریخ و زمان</th>
+                            <th>دستگاه</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentScansTable">
+                        <!-- داده‌ها با جاوااسکریپت اضافه می‌شوند -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- مدیریت کاربران -->
+        <div class="tab-content" id="usersTab" style="display: none;">
+            <div class="table-header" style="margin-bottom: 25px;">
+                <div class="table-title">
+                    <i>👥</i>
+                    <span>مدیریت کاربران</span>
+                </div>
+                <button class="btn-add" id="addUserBtnFull">
+                    <i>+</i>
+                    <span>افزودن کاربر جدید</span>
+                </button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>نام کاربری</th>
+                            <th>تاریخ عضویت</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <!-- داده‌ها با جاوااسکریپت اضافه می‌شوند -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- درخواست‌های جدید -->
+        <div class="tab-content" id="requestsTab" style="display: none;">
+            <div class="table-header" style="margin-bottom: 25px;">
+                <div class="table-title">
+                    <i>📨</i>
+                    <span>درخواست‌های عضویت پرسنل</span>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>نام کاربری</th>
+                            <th>نام و نام خانوادگی</th>
+                            <th>شماره تماس</th>
+                            <th>تاریخ درخواست</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTable">
+                        <!-- داده‌ها با جاوااسکریپت اضافه می‌شوند -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- تاریخچه اسکن‌ها -->
+        <div class="tab-content" id="scansTab" style="display: none;">
+            <div class="table-header" style="margin-bottom: 25px;">
+                <div class="table-title">
+                    <i>📱</i>
+                    <span>تاریخچه اسکن‌ها</span>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <button class="btn" style="background: #28a745; color: white;" onclick="downloadAllScans()">
+                        <i>📥</i>
+                        <span>دانلود همه به صورت TXT</span>
+                    </button>
+                    <div class="search-container" style="position: relative;">
+                        <i style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray);">🔍</i>
+                        <input type="text" id="searchScans" class="form-control" placeholder="جستجو در اسکن‌ها..." style="padding-right: 40px; width: 280px;">
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>کاربر</th>
+                            <th>متن اسکن</th>
+                            <th>تاریخ و زمان</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scansTable">
+                        <!-- داده‌ها با جاوااسکریپت اضافه می‌شوند -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- تنظیمات -->
+        <div class="tab-content" id="settingsTab" style="display: none;">
+            <div class="card" style="max-width: 700px; margin: 0 auto;">
+                <div class="table-header" style="margin-bottom: 25px;">
+                    <div class="table-title">
+                        <i>⚙️</i>
+                        <span>تنظیمات سیستم</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>نام سیستم</label>
+                    <input type="text" class="form-control" id="systemName" value="پیشرو کاسپین سلامت">
+                </div>
+                
+                <div class="form-group">
+                    <label>توضیحات سیستم</label>
+                    <textarea class="form-control" id="systemDescription" rows="3">سیستم مدیریت اسکن QR کد برای پیشرو کاسپین سلامت</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>نام ادمین پیش‌فرض</label>
+                    <input type="text" class="form-control" id="defaultAdmin" value="admin">
+                </div>
+                
+                <div class="form-group">
+                    <label>رمز ادمین پیش‌فرض</label>
+                    <input type="password" class="form-control" id="defaultAdminPass" value="admin123">
+                </div>
+                
+                <div class="form-group">
+                    <label>نوع احراز هویت</label>
+                    <select class="form-control" id="authType">
+                        <option value="gist">Gist API (پیش‌فرض)</option>
+                        <option value="local">ذخیره محلی (localStorage)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>فعال‌سازی کش</label>
+                    <select class="form-control" id="enableCache">
+                        <option value="true">بله</option>
+                        <option value="false" selected>خیر</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px;">
+                    <button class="btn btn-secondary" id="resetSettingsBtn">بازنشانی</button>
+                    <button class="btn btn-primary" id="saveSettingsBtn">ذخیره تنظیمات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال افزودن کاربر -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i>👥</i>
+                    <span>افزودن کاربر جدید</span>
+                </div>
+                <button class="modal-close" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>نام کاربری</label>
+                    <input type="text" class="form-control" id="newUsername" placeholder="نام کاربری را وارد کنید">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور</label>
+                    <input type="password" class="form-control" id="newPassword" placeholder="رمز عبور را وارد کنید">
+                </div>
+                <div class="form-group">
+                    <label>تکرار رمز عبور</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="رمز عبور را دوباره وارد کنید">
+                </div>
+                <div class="form-group">
+                    <label>نقش کاربر</label>
+                    <select class="form-control" id="userRole">
+                        <option value="user">کاربر عادی</option>
+                        <option value="admin">ادمین</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelAddUserBtn">لغو</button>
+                <button class="btn btn-primary" id="saveUserBtn">ذخیره کاربر</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال ویرایش کاربر -->
+    <div class="modal" id="editUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i>✏️</i>
+                    <span>ویرایش کاربر</span>
+                </div>
+                <button class="modal-close" id="closeEditModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label>نام کاربری</label>
+                    <input type="text" class="form-control" id="editUsername" placeholder="نام کاربری را وارد کنید">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور جدید (اختیاری)</label>
+                    <input type="password" class="form-control" id="editPassword" placeholder="رمز عبور جدید را وارد کنید">
+                </div>
+                <div class="form-group">
+                    <label>تکرار رمز عبور</label>
+                    <input type="password" class="form-control" id="editConfirmPassword" placeholder="رمز عبور را دوباره وارد کنید">
+                </div>
+                <div class="form-group">
+                    <label>نقش کاربر</label>
+                    <select class="form-control" id="editUserRole">
+                        <option value="user">کاربر عادی</option>
+                        <option value="admin">ادمین</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelEditUserBtn">لغو</button>
+                <button class="btn btn-primary" id="updateUserBtn">به‌روزرسانی کاربر</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- پاکت اعلان -->
+    <div class="notification" id="notification">
+        <i>✓</i>
+        <span id="notificationMessage">عملیات با موفقیت انجام شد</span>
+    </div>
+
+    <!-- تنظیمات Gist (در محیط واقعی این بخش را پر کن) -->
+    <script>
+        // تنظیمات Gist (این مقادیر را پر کن)
+        const GIST_ID = "1234567890abcdef1234567890abcdef"; // ID Gist خودت را اینجا وارد کن
+        const GITHUB_TOKEN = "ghp_..."; // توکن شخصی خودت را اینجا وارد کن
+    </script>
+
+    <script>
+        // ابزارهای کمکی
+        const utils = {
+            // نمایش اعلان
+            showNotification: function(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                const notificationMessage = document.getElementById('notificationMessage');
+                notificationMessage.textContent = message;
+                
+                // حذف کلاس‌های قبلی
+                notification.classList.remove('success', 'error');
+                notification.classList.add(type);
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3500);
+            },
+            
+            // تبدیل تاریخ به فرمت خوانا
+            formatDateTime: function(timestamp) {
+                if (!timestamp) return 'نامشخص';
+                
+                try {
+                    // اگر timestamp یک شیء Date باشد
+                    if (timestamp instanceof Date) {
+                        return timestamp.toLocaleString('fa-IR');
+                    }
+                    
+                    // اگر timestamp یک رشته باشد
+                    if (typeof timestamp === 'string') {
+                        return new Date(timestamp).toLocaleString('fa-IR');
+                    }
+                    
+                    // اگر timestamp یک عدد باشد (میلی‌ثانیه)
+                    if (typeof timestamp === 'number') {
+                        return new Date(timestamp).toLocaleString('fa-IR');
+                    }
+                    
+                    return 'تاریخ نامعتبر';
+                } catch (e) {
+                    console.error('خطا در فرمت‌دهی تاریخ:', e);
+                    return 'تاریخ نامعتبر';
+                }
+            },
+            
+            // تولید یک شناسه تصادفی
+            generateId: function() {
+                return Math.random().toString(36).substr(2, 9);
+            },
+            
+            // بررسی تهی بودن مقدار
+            isEmpty: function(value) {
+                return value === null || value === undefined || value === '';
+            }
+        };
+
+        // مدیریت وضعیت
+        const state = {
+            users: [],
+            pendingRequests: [],
+            scans: [],
+            currentUser: null,
+            isLoading: false,
+            
+            // تنظیم وضعیت بارگیری
+            setLoading: function(isLoading) {
+                this.isLoading = isLoading;
+                const loader = document.querySelector('.loader');
+                if (isLoading) {
+                    loader.style.display = 'flex';
+                } else {
+                    loader.style.display = 'none';
+                }
+            },
+            
+            // بارگیری داده‌ها از Gist
+            loadData: async function() {
+                this.setLoading(true);
+                
+                try {
+                    const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                        headers: {
+                            "Authorization": `token ${GITHUB_TOKEN}`,
+                            "Accept": "application/vnd.github.v3+json"
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('خطا در دریافت داده‌ها از Gist');
+                    }
+                    
+                    const gist = await response.json();
+                    const filename = Object.keys(gist.files)[0];
+                    const content = JSON.parse(gist.files[filename].content);
+                    
+                    this.users = content.users || [];
+                    this.pendingRequests = content.pendingRequests || [];
+                    this.scans = content.scans || [];
+                    
+                    // تنظیم کاربر فعلی
+                    const storedUser = localStorage.getItem('currentUser');
+                    if (storedUser) {
+                        this.currentUser = this.users.find(u => u.username === storedUser) || null;
+                    }
+                    
+                    this.setLoading(false);
+                    return true;
+                } catch (error) {
+                    console.error('خطا در بارگیری داده‌ها:', error);
+                    this.setLoading(false);
+                    utils.showNotification('خطا در اتصال به سرور', 'error');
+                    return false;
+                }
+            },
+            
+            // به‌روزرسانی داده‌ها در Gist
+            updateData: async function(data) {
+                this.setLoading(true);
+                
+                try {
+                    const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                        method: "PATCH",
+                        headers: {
+                            "Authorization": `token ${GITHUB_TOKEN}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            files: {
+                                "data.json": {
+                                    content: JSON.stringify(data, null, 2)
+                                }
+                            }
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('خطا در به‌روزرسانی داده‌ها');
+                    }
+                    
+                    await this.loadData();
+                    this.setLoading(false);
+                    return true;
+                } catch (error) {
+                    console.error('خطا در به‌روزرسانی داده‌ها:', error);
+                    this.setLoading(false);
+                    utils.showNotification('خطا در ذخیره داده‌ها', 'error');
+                    return false;
+                }
+            },
+            
+            // افزودن کاربر جدید
+            addUser: async function(username, password, role = 'user') {
+                if (this.users.some(u => u.username === username)) {
+                    utils.showNotification('نام کاربری تکراری است', 'error');
+                    return false;
+                }
+                
+                const newUser = {
+                    id: utils.generateId(),
+                    username: username,
+                    password: password,
+                    role: role,
+                    createdAt: new Date().toISOString()
+                };
+                
+                const data = {
+                    users: [...this.users, newUser],
+                    pendingRequests: this.pendingRequests,
+                    scans: this.scans
+                };
+                
+                return await this.updateData(data);
+            },
+            
+            // ویرایش کاربر
+            editUser: async function(userId, username, password, role) {
+                const userIndex = this.users.findIndex(u => u.id === userId);
+                if (userIndex === -1) return false;
+                
+                const updatedUser = {
+                    ...this.users[userIndex],
+                    username: username,
+                    role: role
+                };
+                
+                if (password) {
+                    updatedUser.password = password;
+                }
+                
+                const updatedUsers = [...this.users];
+                updatedUsers[userIndex] = updatedUser;
+                
+                const data = {
+                    users: updatedUsers,
+                    pendingRequests: this.pendingRequests,
+                    scans: this.scans
+                };
+                
+                return await this.updateData(data);
+            },
+            
+            // حذف کاربر
+            deleteUser: async function(userId) {
+                const userIndex = this.users.findIndex(u => u.id === userId);
+                if (userIndex === -1) return false;
+                
+                if (!confirm('آیا از حذف این کاربر مطمئن هستید؟')) {
+                    return false;
+                }
+                
+                const updatedUsers = this.users.filter(u => u.id !== userId);
+                
+                const data = {
+                    users: updatedUsers,
+                    pendingRequests: this.pendingRequests,
+                    scans: this.scans
+                };
+                
+                return await this.updateData(data);
+            },
+            
+            // تأیید درخواست
+            approveRequest: async function(requestId) {
+                if (!confirm('آیا از تأیید این درخواست مطمئن هستید؟')) {
+                    return false;
+                }
+                
+                const requestIndex = this.pendingRequests.findIndex(r => r.id === requestId);
+                if (requestIndex === -1) return false;
+                
+                const request = this.pendingRequests[requestIndex];
+                
+                // افزودن به کاربران
+                const updatedUsers = [...this.users, {
+                    id: utils.generateId(),
+                    username: request.username,
+                    password: request.password,
+                    fullName: request.fullName,
+                    phone: request.phone,
+                    role: request.role,
+                    createdAt: new Date().toISOString()
+                }];
+                
+                // حذف از درخواست‌های در انتظار
+                const updatedRequests = this.pendingRequests.filter(r => r.id !== requestId);
+                
+                const data = {
+                    users: updatedUsers,
+                    pendingRequests: updatedRequests,
+                    scans: this.scans
+                };
+                
+                return await this.updateData(data);
+            },
+            
+            // رد درخواست
+            rejectRequest: async function(requestId) {
+                if (!confirm('آیا از رد این درخواست مطمئن هستید؟')) {
+                    return false;
+                }
+                
+                const requestIndex = this.pendingRequests.findIndex(r => r.id === requestId);
+                if (requestIndex === -1) return false;
+                
+                // حذف از درخواست‌های در انتظار
+                const updatedRequests = this.pendingRequests.filter(r => r.id !== requestId);
+                
+                const data = {
+                    users: this.users,
+                    pendingRequests: updatedRequests,
+                    scans: this.scans
+                };
+                
+                return await this.updateData(data);
+            }
+        };
+
+        // رابط کاربری
+        const ui = {
+            // نمایش تب‌ها
+            initTabs: function() {
+                const tabItems = document.querySelectorAll('.sidebar-menu-item[data-tab]');
+                tabItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        // حذف کلاس active از همه آیتم‌ها
+                        tabItems.forEach(i => i.classList.remove('active'));
+                        
+                        // افزودن کلاس active به آیتم فعلی
+                        item.classList.add('active');
+                        
+                        // پنهان کردن همه تب‌ها
+                        document.querySelectorAll('.tab-content').forEach(tab => {
+                            tab.style.display = 'none';
+                        });
+                        
+                        // نمایش تب مربوطه
+                        const tabId = item.getAttribute('data-tab');
+                        document.getElementById(`${tabId}Tab`).style.display = 'block';
+                        
+                        // بارگیری داده‌های تب
+                        if (tabId === 'users') {
+                            this.renderUsersTable();
+                        } else if (tabId === 'scans') {
+                            this.renderScansTable();
+                        } else if (tabId === 'requests') {
+                            this.renderPendingRequests();
+                        }
+                    });
+                });
+            },
+            
+            // نمایش کاربران اخیر
+            renderRecentUsers: function() {
+                const tableBody = document.getElementById('recentUsersTable');
+                tableBody.innerHTML = '';
+                
+                const recentUsers = [...state.users]
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .slice(0, 5);
+                
+                if (recentUsers.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 25px; color: var(--gray);">کاربری یافت نشد</td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                recentUsers.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.username}</td>
+                        <td>${utils.formatDateTime(user.createdAt)}</td>
+                        <td><span class="status status-active">فعال</span></td>
+                        <td>
+                            <button class="action-btn edit-user" data-id="${user.id}"><i>✏️</i> ویرایش</button>
+                            <button class="action-btn delete-user" data-id="${user.id}"><i>🗑️</i> حذف</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // افزودن event listeners به دکمه‌ها
+                document.querySelectorAll('.edit-user').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const userId = e.target.closest('.action-btn').getAttribute('data-id');
+                        this.openEditUserModal(userId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-user').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const userId = e.target.closest('.action-btn').getAttribute('data-id');
+                        state.deleteUser(userId).then(success => {
+                            if (success) {
+                                this.renderRecentUsers();
+                                this.renderUsersTable();
+                                utils.showNotification('کاربر با موفقیت حذف شد');
+                            }
+                        });
+                    });
+                });
+            },
+            
+            // نمایش اسکن‌های اخیر
+            renderRecentScans: function() {
+                const tableBody = document.getElementById('recentScansTable');
+                tableBody.innerHTML = '';
+                
+                const recentScans = [...state.scans]
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .slice(0, 5);
+                
+                if (recentScans.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 25px; color: var(--gray);">اسکنی یافت نشد</td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                recentScans.forEach(scan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${scan.user}</td>
+                        <td style="direction: ltr; text-align: left; font-family: monospace; font-size: 1.05rem;">${scan.scannedData}</td>
+                        <td>${utils.formatDateTime(scan.timestamp)}</td>
+                        <td>موبایل</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            },
+            
+            // نمایش آمار
+            renderStats: function() {
+                document.getElementById('activeUsers').textContent = state.users.length;
+                document.getElementById('totalScans').textContent = state.scans.length;
+                
+                // محاسبه اسکن‌های امروز
+                const today = new Date().toISOString().split('T')[0];
+                const todayScans = state.scans.filter(scan => 
+                    scan.timestamp && scan.timestamp.startsWith(today)
+                ).length;
+                
+                document.getElementById('todayScans').textContent = todayScans;
+                document.getElementById('newUsers').textContent = Math.min(5, state.users.length);
+            },
+            
+            // نمایش جدول کاربران
+            renderUsersTable: function() {
+                const tableBody = document.getElementById('usersTable');
+                tableBody.innerHTML = '';
+                
+                if (state.users.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 25px; color: var(--gray);">کاربری یافت نشد</td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                state.users.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${user.username}</td>
+                        <td>${utils.formatDateTime(user.createdAt)}</td>
+                        <td><span class="status status-active">فعال</span></td>
+                        <td>
+                            <button class="action-btn edit-user" data-id="${user.id}"><i>✏️</i> ویرایش</button>
+                            <button class="action-btn delete-user" data-id="${user.id}"><i>🗑️</i> حذف</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // افزودن event listeners به دکمه‌ها
+                document.querySelectorAll('.edit-user').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const userId = e.target.closest('.action-btn').getAttribute('data-id');
+                        this.openEditUserModal(userId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-user').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const userId = e.target.closest('.action-btn').getAttribute('data-id');
+                        state.deleteUser(userId).then(success => {
+                            if (success) {
+                                this.renderUsersTable();
+                                this.renderRecentUsers();
+                                utils.showNotification('کاربر با موفقیت حذف شد');
+                            }
+                        });
+                    });
+                });
+            },
+            
+            // نمایش درخواست‌های در انتظار
+            renderPendingRequests: function() {
+                const tableBody = document.getElementById('requestsTable');
+                tableBody.innerHTML = '';
+                
+                const pendingRequests = state.pendingRequests || [];
+                
+                if (pendingRequests.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 25px; color: var(--gray);">درخواستی در انتظار تأیید وجود ندارد</td>
+                        </tr>
+                    `;
+                    
+                    // به‌روزرسانی شمارنده
+                    const counter = document.getElementById('pendingRequestsCount');
+                    counter.textContent = '0';
+                    counter.style.display = 'none';
+                    
+                    return;
+                }
+                
+                // به‌روزرسانی شمارنده
+                const counter = document.getElementById('pendingRequestsCount');
+                counter.textContent = pendingRequests.length;
+                counter.style.display = 'inline-flex';
+                
+                pendingRequests.forEach((request, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${request.username}</td>
+                        <td>${request.fullName}</td>
+                        <td>${request.phone}</td>
+                        <td>${utils.formatDateTime(request.timestamp)}</td>
+                        <td>
+                            <button class="action-btn approve-request" data-id="${request.id}"><i>✓</i> تأیید</button>
+                            <button class="action-btn reject-request" data-id="${request.id}"><i>✗</i> رد</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // افزودن event listeners به دکمه‌ها
+                document.querySelectorAll('.approve-request').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const requestId = e.target.closest('.action-btn').getAttribute('data-id');
+                        this.approveRequest(requestId);
+                    });
+                });
+                
+                document.querySelectorAll('.reject-request').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const requestId = e.target.closest('.action-btn').getAttribute('data-id');
+                        this.rejectRequest(requestId);
+                    });
+                });
+            },
+            
+            // تأیید درخواست
+            approveRequest: async function(requestId) {
+                const success = await state.approveRequest(requestId);
+                if (success) {
+                    this.renderPendingRequests();
+                    this.renderUsersTable();
+                    utils.showNotification('درخواست با موفقیت تأیید شد');
+                }
+            },
+            
+            // رد درخواست
+            rejectRequest: async function(requestId) {
+                const success = await state.rejectRequest(requestId);
+                if (success) {
+                    this.renderPendingRequests();
+                    utils.showNotification('درخواست با موفقیت رد شد');
+                }
+            },
+            
+            // نمایش جدول اسکن‌ها
+            renderScansTable: function() {
+                const tableBody = document.getElementById('scansTable');
+                tableBody.innerHTML = '';
+                
+                if (state.scans.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 25px; color: var(--gray);">اسکنی یافت نشد</td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                // فیلتر بر اساس جستجو
+                const searchTerm = document.getElementById('searchScans').value.toLowerCase();
+                const filteredScans = searchTerm 
+                    ? state.scans.filter(scan => 
+                        scan.user.toLowerCase().includes(searchTerm) ||
+                        scan.scannedData.toLowerCase().includes(searchTerm)
+                    )
+                    : state.scans;
+                
+                filteredScans.forEach((scan, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${scan.user}</td>
+                        <td style="direction: ltr; text-align: left; font-family: monospace; font-size: 1.05rem;">${scan.scannedData}</td>
+                        <td>${utils.formatDateTime(scan.timestamp)}</td>
+                        <td>
+                            <button class="action-btn delete-scan" data-id="${index}"><i>🗑️</i> حذف</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // افزودن event listener به دکمه‌های حذف
+                document.querySelectorAll('.delete-scan').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const scanIndex = parseInt(e.target.closest('.action-btn').getAttribute('data-id'));
+                        this.deleteScan(scanIndex);
+                    });
+                });
+            },
+            
+            // حذف اسکن
+            deleteScan: async function(scanIndex) {
+                if (!confirm('آیا از حذف این اسکن مطمئن هستید؟')) {
+                    return;
+                }
+                
+                const updatedScans = state.scans.filter((_, index) => index !== scanIndex);
+                
+                const data = {
+                    users: state.users,
+                    pendingRequests: state.pendingRequests,
+                    scans: updatedScans
+                };
+                
+                const success = await state.updateData(data);
+                if (success) {
+                    this.renderScansTable();
+                    this.renderRecentScans();
+                    utils.showNotification('اسکن با موفقیت حذف شد');
+                }
+            },
+            
+            // دانلود تمام اسکن‌ها به صورت TXT
+            downloadAllScans: function() {
+                const scans = state.scans;
+                
+                if (scans.length === 0) {
+                    utils.showNotification('هیچ اسکنی برای دانلود وجود ندارد', 'error');
+                    return;
+                }
+                
+                // ساخت محتوای فایل متنی
+                let txtContent = 'پیشرو کاسپین سلامت - سیستم اسکن QR\n';
+                txtContent += 'تاریخ گزارش: ' + new Date().toLocaleDateString('fa-IR') + '\n';
+                txtContent += 'تعداد کل اسکن‌ها: ' + scans.length + '\n';
+                txtContent += '========================================\n\n';
+                
+                // افزودن هر اسکن به فایل
+                scans.forEach((scan, index) => {
+                    const timestamp = scan.timestamp ? 
+                        utils.formatDateTime(scan.timestamp) : 'نامشخص';
+                    
+                    txtContent += `ردیف: ${index + 1}\n`;
+                    txtContent += `کاربر: ${scan.user || 'ناشناس'}\n`;
+                    txtContent += `تاریخ و زمان: ${timestamp}\n`;
+                    txtContent += `متن اسکن شده: ${scan.scannedData}\n`;
+                    txtContent += '----------------------------------------\n\n';
+                });
+                
+                // ایجاد فایل و دانلود آن
+                const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `اسکن_های_QR_${new Date().toISOString().slice(0, 10)}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // پاک کردن منابع
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    utils.showNotification(`فایل TXT با موفقیت دانلود شد!\nتعداد اسکن‌ها: ${scans.length}`);
+                }, 100);
+            },
+            
+            // باز کردن مودال افزودن کاربر
+            openAddUserModal: function() {
+                document.getElementById('addUserModal').style.display = 'flex';
+                document.getElementById('newUsername').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                document.getElementById('userRole').value = 'user';
+            },
+            
+            // بستن مودال افزودن کاربر
+            closeAddUserModal: function() {
+                document.getElementById('addUserModal').style.display = 'none';
+            },
+            
+            // باز کردن مودال ویرایش کاربر
+            openEditUserModal: function(userId) {
+                const user = state.users.find(u => u.id === userId);
+                if (!user) return;
+                
+                document.getElementById('editUserId').value = user.id;
+                document.getElementById('editUsername').value = user.username;
+                document.getElementById('editPassword').value = '';
+                document.getElementById('editConfirmPassword').value = '';
+                document.getElementById('editUserRole').value = user.role;
+                
+                document.getElementById('editUserModal').style.display = 'flex';
+            },
+            
+            // بستن مودال ویرایش کاربر
+            closeEditUserModal: function() {
+                document.getElementById('editUserModal').style.display = 'none';
+            },
+            
+            // بارگیری اولیه
+            init: async function() {
+                // بررسی ورود
+                if (!localStorage.getItem('isLoggedIn') || localStorage.getItem('userRole') !== 'admin') {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                // نمایش نام کاربر
+                const username = localStorage.getItem('currentUser') || 'مدیر سیستم';
+                document.getElementById('userName').textContent = username;
+                document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+                
+                // راه‌اندازی تب‌ها
+                this.initTabs();
+                
+                // بارگیری داده‌ها
+                await state.loadData();
+                
+                // نمایش داده‌ها
+                this.renderRecentUsers();
+                this.renderRecentScans();
+                this.renderStats();
+                this.renderUsersTable();
+                this.renderScansTable();
+                this.renderPendingRequests();
+                
+                // افزودن event listeners
+                this.setupEventListeners();
+            },
+            
+            // تنظیم event listeners
+            setupEventListeners: function() {
+                // دکمه افزودن کاربر
+                document.getElementById('addUserBtn').addEventListener('click', () => this.openAddUserModal());
+                document.getElementById('addUserBtnFull').addEventListener('click', () => this.openAddUserModal());
+                
+                // دکمه‌های بستن مودال
+                document.getElementById('closeModalBtn').addEventListener('click', () => this.closeAddUserModal());
+                document.getElementById('cancelAddUserBtn').addEventListener('click', () => this.closeAddUserModal());
+                
+                document.getElementById('closeEditModalBtn').addEventListener('click', () => this.closeEditUserModal());
+                document.getElementById('cancelEditUserBtn').addEventListener('click', () => this.closeEditUserModal());
+                
+                // ذخیره کاربر جدید
+                document.getElementById('saveUserBtn').addEventListener('click', async () => {
+                    const username = document.getElementById('newUsername').value.trim();
+                    const password = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    const role = document.getElementById('userRole').value;
+                    
+                    if (!username || !password) {
+                        utils.showNotification('لطفاً نام کاربری و رمز عبور را وارد کنید', 'error');
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        utils.showNotification('رمز عبور و تکرار آن یکسان نیستند', 'error');
+                        return;
+                    }
+                    
+                    if (password.length < 6) {
+                        utils.showNotification('رمز عبور باید حداقل 6 کاراکتر باشد', 'error');
+                        return;
+                    }
+                    
+                    const success = await state.addUser(username, password, role);
+                    if (success) {
+                        this.closeAddUserModal();
+                        this.renderUsersTable();
+                        this.renderRecentUsers();
+                        utils.showNotification('کاربر با موفقیت اضافه شد');
+                    }
+                });
+                
+                // به‌روزرسانی کاربر
+                document.getElementById('updateUserBtn').addEventListener('click', async () => {
+                    const userId = document.getElementById('editUserId').value;
+                    const username = document.getElementById('editUsername').value.trim();
+                    const password = document.getElementById('editPassword').value;
+                    const confirmPassword = document.getElementById('editConfirmPassword').value;
+                    const role = document.getElementById('editUserRole').value;
+                    
+                    if (!username) {
+                        utils.showNotification('لطفاً نام کاربری را وارد کنید', 'error');
+                        return;
+                    }
+                    
+                    if (password && password !== confirmPassword) {
+                        utils.showNotification('رمز عبور و تکرار آن یکسان نیستند', 'error');
+                        return;
+                    }
+                    
+                    if (password && password.length < 6) {
+                        utils.showNotification('رمز عبور باید حداقل 6 کاراکتر باشد', 'error');
+                        return;
+                    }
+                    
+                    const success = await state.editUser(userId, username, password, role);
+                    if (success) {
+                        this.closeEditUserModal();
+                        this.renderUsersTable();
+                        this.renderRecentUsers();
+                        utils.showNotification('کاربر با موفقیت به‌روزرسانی شد');
+                    }
+                });
+                
+                // جستجو در اسکن‌ها
+                document.getElementById('searchScans').addEventListener('input', () => {
+                    this.renderScansTable();
+                });
+                
+                // خروج
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userEmail');
+                    window.location.href = 'index.html';
+                });
+                
+                // منوی موبایل
+                document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+                    document.querySelector('.sidebar').classList.toggle('active');
+                });
+                
+                // فیلتر دوره‌های زمانی
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    });
+                });
+                
+                // دانلود تمام اسکن‌ها
+                document.querySelectorAll('[onclick="downloadAllScans()"]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.downloadAllScans();
+                    });
+                });
+            }
+        };
+
+        // راه‌اندازی اولیه
+        document.addEventListener('DOMContentLoaded', () => {
+            ui.init();
+        });
+    </script>
+</body>
+</html>
